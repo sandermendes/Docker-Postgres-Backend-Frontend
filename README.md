@@ -19,7 +19,7 @@ Structure folder needed:
   test-project-frontend
 ```
 
-[Download Backend (test-project-backend)](https://github.com/sandermendes/Golang-project-backend.git)
+[Download Backend (test-project-backend)](https://github.com/sandermendes/Golang-project-backend/archive/refs/heads/master.zip)
 
 [Download Frontend (test-project-frontend)](https://github.com/sandermendes/Frontend-React-Material-UI/archive/refs/heads/master.zip)
 
