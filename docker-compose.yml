@@ -1,0 +1,75 @@
+version: '3'
+services:
+  postgres:
+    # Container Name
+    container_name: PostgresData
+    # Selected image
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - DATABASE_HOST=localhost
+    ports:
+      - "5432:5432"
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  backend:
+    # Container Name
+    container_name: GoLangApp
+    # Get info to build image from Dockerfile located at the same level folder
+    build:
+      dockerfile: ../test-project-backend/Dockerfile
+      context: ../test-project-backend
+    ports:
+      # Forward the exposed port 8080 on the container to port 8080 on the host machine
+      - "8080:8080"
+    environment:
+      - APP_LISTEN_PORT=8080
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_DBNAME=postgres
+      - DB_SSLMODE=disable
+    restart: on-failure
+    volumes:
+      - backend:/usr/src/backend/
+    # wait for container be run
+    depends_on:
+      - postgres
+      # This service depends on postgres. Start that first.
+    networks:
+      - backend
+
+  frontend:
+    # Container Name
+    container_name: FrontEnd ReactJS
+    # Get info to build image from Dockerfile
+    build:
+      dockerfile: ../test-project-frontend/Dockerfile
+      context: ../test-project-frontend
+    ports:
+      # Forward the exposed port 3000 on the container to port 3000 on the host machine
+      - "3000:3000"
+    restart: on-failure
+    volumes:
+      - frontend:/usr/src/frontend/
+    # wait for container be run
+    depends_on:
+      - backend
+      # This service depends on backend. Start that first.
+    networks:
+      - backend
+
+volumes:
+  backend:
+  frontend:
+  database_postgres:
+
+# Networks to be created to facilitate communication between containers
+networks:
+  backend:
